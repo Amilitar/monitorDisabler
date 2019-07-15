@@ -1,7 +1,8 @@
 import argparse
 import pickle as pcl
+import shutil
 import subprocess
-from os import mkdir, remove
+from os import mkdir
 from os.path import exists, expanduser
 
 from main.enumerations.app_status import AppStatus
@@ -27,10 +28,11 @@ class MonitorDisabler:
 
     def __check_parameters(self):
         parameters = parser.parse_args()
-        # if parameters.reset:
+        if parameters.r:
+            self.__reset()
 
     def __reset(self):
-        remove(SETTINGS_PATH)
+        shutil.rmtree(SETTINGS_PATH)
 
     def __get_allowed_monitors(self):
         allowed_monitors = None
@@ -94,6 +96,6 @@ class MonitorDisabler:
 
 parser = argparse.ArgumentParser(description='Short sample app')
 
-parser.add_argument('-r', default=None, help="Delete settings folder and recreate")
+parser.add_argument('-r', action='store_true', help="Delete settings folder and recreate")
 
 MonitorDisabler()

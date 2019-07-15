@@ -42,8 +42,9 @@ class Monitor:
         return resolution
 
     def disable(self):
-        subprocess.Popen(f"xrandr --output {self.name} --off", stdout=subprocess.PIPE,
-                         shell=True).communicate()
+        if not self.is_primary:
+            subprocess.Popen(f"xrandr --output {self.name} --off", stdout=subprocess.PIPE,
+                             shell=True).communicate()
 
     def enable(self, primary_monitor):
         subprocess.Popen(f"xrandr --output {self.name} --auto", stdout=subprocess.PIPE,
