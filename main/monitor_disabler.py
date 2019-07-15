@@ -6,6 +6,7 @@ from os.path import exists, expanduser
 from main.enumerations.app_status import AppStatus
 from main.enumerations.monitor_status import MonitorStatus
 from main.monitor import Monitor
+from main.monitor_manager import MonitorManager
 
 EMPTY = ""
 BASE_PATH = expanduser("~")
@@ -19,21 +20,19 @@ class MonitorDisabler:
     def __init__(self) -> None:
         self.status = self.__check_status()
         self.allowed_monitors = self.__get_allowed_monitors()
-        self.working_monitors = self.__get_working_monitors()
+        self.monitor_manager = MonitorManager(self.__get_working_monitors(), self.allowed_monitors)
+        self.monitor_manager.smart_disable_enable()
 
     def __get_allowed_monitors(self):
         allowed_monitors = None
-        if self.status == AppStatus.FIRST_START:
-            bash_command = "xrandr"
-            monitor_bytes, error = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE,
-                                                    shell=True).communicate()
-            if not error:
-                monitor_strings = self.__get_monitors_from_bytes(monitor_bytes)
-                allowed_monitors = [Monitor(x) for x in monitor_strings if self.__is_contain(x)]
-                self.__save_monitors(ALLOWED_MONITORS, allowed_monitors)
 
-        else:
-            allowed_monitors = self.__get_monitors(ALLOWED_MONITORS)
+        bash_command = "xrandr"
+        monitor_bytes, error = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE,
+                                                shell=True).communicate()
+        if not error:
+            monitor_strings = self.__get_monitors_from_bytes(monitor_bytes)
+            allowed_monitors = [Monitor(x) for x in monitor_strings if self.__is_contain(x)]
+
         return allowed_monitors
 
     @staticmethod
@@ -62,9 +61,6 @@ class MonitorDisabler:
     def __is_contain(source):
         statuses = ["connected", "disconnected"]
         return len([x for x in statuses if x in source]) > 0
-
-    def __prepare_env(self):
-        pass
 
     @staticmethod
     def __check_status():
