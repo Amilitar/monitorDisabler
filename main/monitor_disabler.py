@@ -1,6 +1,7 @@
+import argparse
 import pickle as pcl
 import subprocess
-from os import mkdir
+from os import mkdir, remove
 from os.path import exists, expanduser
 
 from main.enumerations.app_status import AppStatus
@@ -18,10 +19,18 @@ WORKING_MONITORS = f"{SETTINGS_PATH}/working_monitors.pcl"
 class MonitorDisabler:
 
     def __init__(self) -> None:
+        self.__check_parameters()
         self.status = self.__check_status()
         self.allowed_monitors = self.__get_allowed_monitors()
         self.monitor_manager = MonitorManager(self.__get_working_monitors(), self.allowed_monitors)
         self.monitor_manager.smart_disable_enable()
+
+    def __check_parameters(self):
+        parameters = parser.parse_args()
+        # if parameters.reset:
+
+    def __reset(self):
+        remove(SETTINGS_PATH)
 
     def __get_allowed_monitors(self):
         allowed_monitors = None
@@ -83,4 +92,8 @@ class MonitorDisabler:
         return working_monitors
 
 
-a = MonitorDisabler()
+parser = argparse.ArgumentParser(description='Short sample app')
+
+parser.add_argument('-r', default=None, help="Delete settings folder and recreate")
+
+MonitorDisabler()
