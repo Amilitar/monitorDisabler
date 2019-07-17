@@ -31,7 +31,8 @@ class MonitorDisabler:
         if parameters.r:
             self.__reset()
 
-    def __reset(self):
+    @staticmethod
+    def __reset():
         shutil.rmtree(SETTINGS_PATH)
 
     def __get_allowed_monitors(self):
