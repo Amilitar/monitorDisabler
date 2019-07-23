@@ -3,18 +3,14 @@ import pickle as pcl
 import shutil
 import subprocess
 from os import mkdir
-from os.path import exists, expanduser
+from os.path import exists
+from subprocess import PIPE
 
-from main.enumerations.app_status import AppStatus
-from main.enumerations.monitor_status import MonitorStatus
+from main.common.common_const import SETTINGS_PATH, WORKING_MONITORS
+from main.enumeration.app_status import AppStatus
+from main.enumeration.monitor_status import MonitorStatus
 from main.monitor import Monitor
 from main.monitor_manager import MonitorManager
-
-EMPTY = ""
-BASE_PATH = expanduser("~")
-SETTINGS_PATH = f"{BASE_PATH}/.monitor_disabler"
-ALLOWED_MONITORS = f"{SETTINGS_PATH}/allowed_monitors.pcl"
-WORKING_MONITORS = f"{SETTINGS_PATH}/working_monitors.pcl"
 
 
 class MonitorDisabler:
@@ -35,12 +31,11 @@ class MonitorDisabler:
     def __reset():
         shutil.rmtree(SETTINGS_PATH)
 
-    def __get_allowed_monitors(self):
+    def __get_allowed_monitors(self) -> list:
         allowed_monitors = None
 
         bash_command = "xrandr"
-        monitor_bytes, error = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE,
-                                                shell=True).communicate()
+        monitor_bytes, error = subprocess.Popen(bash_command, stdout=PIPE, shell=True).communicate()
         if not error:
             monitor_strings = self.__get_monitors_from_bytes(monitor_bytes)
             allowed_monitors = [Monitor(x) for x in monitor_strings if self.__is_contain(x)]

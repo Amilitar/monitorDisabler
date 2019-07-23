@@ -1,7 +1,7 @@
 import re
 import subprocess
 
-from main.enumerations.monitor_status import MonitorStatus
+from main.enumeration.monitor_status import MonitorStatus
 
 PRIMARY = "primary"
 
@@ -26,10 +26,12 @@ class Monitor:
         self.resolution = self.__get_resolution(options)
         return options[0], self.__get_status_from_string(options[1])
 
-    def __get_status_from_string(self, status_str):
+    @staticmethod
+    def __get_status_from_string(status_str):
         return MonitorStatus(status_str)
 
-    def __get_resolution(self, options):
+    @staticmethod
+    def __get_resolution(options):
         resolution = None
         if options[2] == PRIMARY:
             resolution_str = options[3]
