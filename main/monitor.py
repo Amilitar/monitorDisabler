@@ -12,10 +12,14 @@ DP-2 connected 1920x1080+1920+0 (normal left inverted right x axis y axis) 527mm
 
 
 class Monitor:
+    resolution = None
+
     def __init__(self, monitor_str) -> None:
-        self.resolution = None
         self.is_primary = self.get_primary_status(monitor_str)
         self.name, self.status = self.get_options(monitor_str)
+
+    def init_fields(self):
+        pass
 
     @staticmethod
     def get_primary_status(monitor_str):
