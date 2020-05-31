@@ -13,7 +13,8 @@ class MonitorManager:
     @property
     def is_disabled(self) -> bool:
         return len(
-            [x for x in self.allowed_monitors if x.status == MonitorStatus.CONNECTED and x.resolution is None]) > 0
+            [x for x in self.allowed_monitors if
+             x.status == MonitorStatus.CONNECTED and x.resolution is None]) > 0
 
     def smart_disable_enable(self):
         if self.is_disabled:

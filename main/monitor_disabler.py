@@ -9,7 +9,7 @@ from subprocess import PIPE
 from main.common.common_const import SETTINGS_PATH, WORKING_MONITORS
 from main.enumeration.app_status import AppStatus
 from main.enumeration.monitor_status import MonitorStatus
-from main.monitor import Monitor
+from main.model.monitor import Monitor
 from main.monitor_manager import MonitorManager
 
 
