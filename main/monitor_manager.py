@@ -34,17 +34,16 @@ class MonitorManager:
         [monitor.disable() for monitor in self.monitor_list if not monitor.is_primary]
 
     def __enable(self):
-        [monitor.enable(self.primary_monitor) for monitor in self.monitor_list if not monitor.is_primary]
+        [monitor.enable(self.primary_monitor) for monitor in self.monitor_list if
+         not monitor.is_primary]
 
     def __get_monitor_list(self) -> list:
-        working_monitors = None
         if self.app_status == AppStatus.FIRST_START:
-            allowed_monitors = self.allowed_monitors
-            if allowed_monitors:
-                working_monitors = [x for x in allowed_monitors if x.status == MonitorStatus.CONNECTED]
-                self.__save_monitors(WORKING_MONITORS, working_monitors)
+            working_monitors = self.__get_working_monitors_from_allowed(self.allowed_monitors)
         else:
             working_monitors = self.__get_monitors(WORKING_MONITORS)
+            if not working_monitors:
+                working_monitors = self.__get_working_monitors_from_allowed(self.allowed_monitors)
 
         return working_monitors
 
@@ -58,6 +57,13 @@ class MonitorManager:
             allowed_monitors = [Monitor(x) for x in monitor_strings if self.__is_contain(x)]
 
         return allowed_monitors
+
+    def __get_working_monitors_from_allowed(self, allowed_monitors):
+        working_monitors = None
+        if allowed_monitors:
+            working_monitors = [x for x in allowed_monitors if x.status == MonitorStatus.CONNECTED]
+            self.__save_monitors(WORKING_MONITORS, working_monitors)
+        return working_monitors
 
     @staticmethod
     def __save_monitors(path, monitors):

@@ -22,7 +22,8 @@ class MonitorDisabler:
 
     @staticmethod
     def __reset():
-        shutil.rmtree(SETTINGS_PATH)
+        if exists(SETTINGS_PATH):
+            shutil.rmtree(SETTINGS_PATH)
 
     @staticmethod
     def __check_status():
