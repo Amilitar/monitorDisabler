@@ -5,17 +5,14 @@ from os.path import exists
 
 from main.common.common_const import SETTINGS_PATH
 from main.enumeration.app_status import AppStatus
-from main.enumeration.monitor_status import MonitorStatus
-from main.model.monitor import Monitor
 from main.monitor_manager import MonitorManager
 
 
 class MonitorDisabler:
     def __init__(self) -> None:
         self.__check_parameters()
-        self.status = self.__check_status()
-        self.allowed_monitors = self.__get_allowed_monitors()
-        self.monitor_manager = MonitorManager(self.__get_working_monitors(), self.allowed_monitors)
+        status = self.__check_status()
+        self.monitor_manager = MonitorManager(status)
         self.monitor_manager.smart_disable_enable()
 
     def __check_parameters(self):
@@ -36,8 +33,9 @@ class MonitorDisabler:
             return AppStatus.FIRST_START
 
 
-parser = argparse.ArgumentParser(description='Short sample app')
+parser = argparse.ArgumentParser(
+    description="Disable all not primary monitors, and restore in second app restart")
 
-parser.add_argument('-r', action='store_true', help="Delete settings folder and recreate")
+parser.add_argument("-r", action="store_true", help="Delete settings folder and recreate")
 
 MonitorDisabler()
